@@ -1,0 +1,20 @@
+<section class="not-found">
+  <div class="settings-corner">
+    <app-settings-panel></app-settings-panel>
+  </div>
+
+  <div class="card">
+    <div class="code" aria-hidden="true">404</div>
+    <h1>{{ i18n.t('notFound.title') }}</h1>
+
+    @if (searched(); as name) {
+      <p class="lead">{{ i18n.t('notFound.familyMissing', { name: name }) }}</p>
+    } @else {
+      <p class="lead">{{ i18n.t('notFound.generic') }}</p>
+    }
+
+    <div class="actions">
+      <a class="btn-primary" routerLink="/">{{ i18n.t('notFound.back') }}</a>
+    </div>
+  </div>
+</section>

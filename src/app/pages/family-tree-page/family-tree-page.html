@@ -1,0 +1,88 @@
+<div class="page">
+  <header class="topbar">
+    <a class="brand" routerLink="/">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2 1 7l11 5 11-5-11-5zM1 12l11 5 11-5M1 17l11 5 11-5"/>
+      </svg>
+      <span>{{ i18n.t('tree.brand') }}</span>
+    </a>
+    <div class="title-block">
+      <h1>{{ tree()?.name || tree()?.familyName || familyName() }}</h1>
+      @if (totalMembers()) {
+        <p class="meta">{{ i18n.t('tree.members', { count: totalMembers() }) }}</p>
+      }
+    </div>
+
+    <div class="zoom-controls" role="toolbar" [attr.aria-label]="i18n.t('tree.zoomToolbar')">
+      <button class="z-btn" (click)="zoomOut()"
+              [attr.aria-label]="i18n.t('tree.zoomOutLabel')"
+              [attr.title]="i18n.t('tree.zoomOut')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg>
+      </button>
+      <button class="z-percent" (click)="resetView()" [attr.title]="i18n.t('tree.zoomReset')">
+        {{ zoomPercent() }}%
+      </button>
+      <button class="z-btn" (click)="zoomIn()"
+              [attr.aria-label]="i18n.t('tree.zoomInLabel')"
+              [attr.title]="i18n.t('tree.zoomIn')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>
+
+    <app-settings-panel></app-settings-panel>
+  </header>
+
+  @if (loading()) {
+    <div class="state-banner">
+      <span class="spinner" aria-hidden="true"></span>
+      {{ i18n.t('tree.loading') }}
+    </div>
+  }
+
+  @if (error()) {
+    <div class="state-banner error">{{ error() }}</div>
+  }
+
+  <div
+    class="viewport"
+    #viewport
+    (wheel)="onWheel($event)"
+    (pointerdown)="onPointerDown($event)"
+    (pointermove)="onPointerMove($event)"
+    (pointerup)="onPointerUp($event)"
+    (pointercancel)="onPointerUp($event)"
+    [class.dragging]="false"
+  >
+    <div class="stage" [style.transform]="transform()">
+      @if (!loading() && totalMembers() === 0 && !error()) {
+        <div class="empty">
+          <svg viewBox="0 0 24 24" class="big-icon" aria-hidden="true">
+            <path d="M12 2v6m0 0a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+          </svg>
+          <h3>{{ i18n.t('tree.emptyTitle') }}</h3>
+          <p>{{ i18n.t('tree.emptySubtitle') }}</p>
+        </div>
+      } @else if (tree()) {
+        <header class="forest-banner">
+          <div class="forest-banner-crest" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2 1 7l11 5 11-5-11-5zM1 12l11 5 11-5M1 17l11 5 11-5"/>
+            </svg>
+          </div>
+          <h2>{{ tree()?.name || tree()?.familyName }}</h2>
+          @if (tree()?.familyName && tree()?.name && tree()?.familyName !== tree()?.name) {
+            <p class="forest-banner-sub">{{ tree()?.familyName }}</p>
+          }
+        </header>
+
+        <div class="forest" [class.is-multi]="forest().length > 1">
+          @for (root of forest(); track root.primary.id) {
+            <div class="forest-row">
+              <app-tree-node [node]="root" [isRoot]="true" [familyName]="tree()?.familyName"></app-tree-node>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

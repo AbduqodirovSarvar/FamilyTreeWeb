@@ -1,0 +1,204 @@
+$line-width: 2px;
+
+:host {
+  display: inline-block;
+  position: relative;
+}
+
+/* Mirror the elevation rules in member-card so the entire subtree —
+   including its hub, link, diamond — rises above sibling subtrees while
+   a member inside is being inspected. */
+:host:has(.member:hover),
+:host:has(.member:focus-within) {
+  z-index: 100;
+}
+
+.node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.node:has(.member:hover),
+.node:has(.member:focus-within) {
+  z-index: 100;
+}
+
+.hub:has(.member:hover),
+.hub:has(.member:focus-within) {
+  z-index: 100;
+}
+
+/* ─── Polygamy: row of independent marriage hubs. ─── */
+.poly-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 56px;
+  position: relative;
+  padding-top: 28px;
+}
+
+.poly-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 80px;
+  right: 80px;
+  height: $line-width;
+  background: var(--tree-line);
+  opacity: 0.45;
+}
+
+.poly-marriage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.poly-marriage::before {
+  content: '';
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  width: $line-width;
+  height: 28px;
+  background: var(--tree-line);
+  opacity: 0.55;
+  transform: translateX(-1px);
+}
+
+.common-area {
+  margin-top: 32px;
+}
+
+/* ─── Family hub ─── */
+.hub {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 32px 28px;
+  border: 2px dashed var(--hub-border);
+  border-radius: 48px;
+  background: var(--hub-bg);
+  backdrop-filter: blur(2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.link {
+  flex-shrink: 0;
+  width: 28px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--male-soft), var(--female-soft));
+  opacity: 0.8;
+}
+
+/* Member circle, meta, and tooltip live in member-card.scss now. */
+
+/* Diamond connector — sits at the bottom of every hub. */
+.diamond {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 14px;
+  height: 14px;
+  background: var(--tree-line);
+  border: 2px solid var(--surface);
+  z-index: 1;
+}
+
+/* ─── Children area ─── */
+.children-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.trunk {
+  width: $line-width;
+  height: 48px;
+  background: var(--tree-line);
+}
+
+.blocks {
+  display: flex;
+  align-items: flex-start;
+  gap: 80px;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.block-label {
+  display: inline-block;
+  padding: 4px 16px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: #ffffff;
+  white-space: nowrap;
+  margin-top: -12px;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 2;
+  box-shadow: var(--shadow-md);
+}
+
+.spouse-label { background: var(--female); }
+.common-label { background: var(--text-muted); }
+
+.block-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 64px;
+  position: relative;
+  padding: 0 24px;
+}
+
+.sibling-bar {
+  position: absolute;
+  top: 0;
+  left: 96px;
+  right: 96px;
+  height: $line-width;
+  background: var(--tree-line);
+}
+
+.child {
+  position: relative;
+  padding-top: 40px;
+}
+
+/* When a descendant member is hovered, lift this whole subtree above
+   sibling .child-s AND above the .block-label (z-index: 2) that sits in
+   the same .block. Without this the pink "FARZANDLARI" badge paints
+   over the upward-extending tooltip. */
+.child:has(.member:hover),
+.child:has(.member:focus-within) {
+  z-index: 100;
+}
+
+.block-row:has(.member:hover),
+.block-row:has(.member:focus-within) {
+  position: relative;
+  z-index: 100;
+}
+
+.child-drop {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(calc(#{$line-width} / -2));
+  width: $line-width;
+  height: 40px;
+  background: var(--tree-line);
+}

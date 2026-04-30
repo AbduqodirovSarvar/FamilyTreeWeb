@@ -1,0 +1,121 @@
+@let n = node;
+
+<div class="node">
+  @if (!isPolygamous()) {
+    <!-- Monogamy / solo: single shared hub. -->
+    <div class="hub">
+      <app-member-card [member]="n.primary" [relation]="primaryRelation()"></app-member-card>
+
+      @if (n.spouses.length === 1) {
+        <span class="link" aria-hidden="true"></span>
+        <app-member-card [member]="n.spouses[0].spouse" [relation]="spouseLabel(0)"></app-member-card>
+      }
+
+      @if (hasAnyChildren()) {
+        <div class="diamond" aria-hidden="true"></div>
+      }
+    </div>
+
+    @if (hasAnyChildren()) {
+      <div class="children-area">
+        <div class="trunk" aria-hidden="true"></div>
+        <div class="blocks">
+          @if (n.commonChildren.length > 0) {
+            <div class="block">
+              <span class="block-label common-label">{{ commonChildrenLabel() }}</span>
+              <div class="block-row">
+                @if (n.commonChildren.length > 1) {
+                  <div class="sibling-bar" aria-hidden="true"></div>
+                }
+                @for (c of n.commonChildren; track c.primary.id) {
+                  <div class="child">
+                    <div class="child-drop" aria-hidden="true"></div>
+                    <app-tree-node [node]="c" [familyName]="familyName"></app-tree-node>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          @for (group of visibleSpouseGroups(); track group.spouse.id) {
+            <div class="block">
+              <span class="block-label spouse-label">{{ spouseGroupLabel(group) }}</span>
+              <div class="block-row">
+                @if (group.children.length > 1) {
+                  <div class="sibling-bar" aria-hidden="true"></div>
+                }
+                @for (c of group.children; track c.primary.id) {
+                  <div class="child">
+                    <div class="child-drop" aria-hidden="true"></div>
+                    <app-tree-node [node]="c" [familyName]="familyName"></app-tree-node>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  } @else {
+    <!-- Polygamy: one hub per marriage, side-by-side. Primary repeats per hub. -->
+    <div class="poly-row">
+      @for (group of n.spouses; track group.spouse.id; let i = $index) {
+        <div class="poly-marriage">
+          <div class="hub">
+            <app-member-card [member]="n.primary" [relation]="primaryRelation()"></app-member-card>
+            <span class="link" aria-hidden="true"></span>
+            <app-member-card [member]="group.spouse" [relation]="spouseLabel(i)"></app-member-card>
+
+            @if (group.children.length > 0) {
+              <div class="diamond" aria-hidden="true"></div>
+            }
+          </div>
+
+          @if (group.children.length > 0) {
+            <div class="children-area">
+              <div class="trunk" aria-hidden="true"></div>
+              <div class="blocks">
+                <div class="block">
+                  <span class="block-label spouse-label">{{ spouseGroupLabel(group) }}</span>
+                  <div class="block-row">
+                    @if (group.children.length > 1) {
+                      <div class="sibling-bar" aria-hidden="true"></div>
+                    }
+                    @for (c of group.children; track c.primary.id) {
+                      <div class="child">
+                        <div class="child-drop" aria-hidden="true"></div>
+                        <app-tree-node [node]="c" [familyName]="familyName"></app-tree-node>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    @if (n.commonChildren.length > 0) {
+      <div class="children-area common-area">
+        <div class="trunk" aria-hidden="true"></div>
+        <div class="blocks">
+          <div class="block">
+            <span class="block-label common-label">{{ commonChildrenLabel() }}</span>
+            <div class="block-row">
+              @if (n.commonChildren.length > 1) {
+                <div class="sibling-bar" aria-hidden="true"></div>
+              }
+              @for (c of n.commonChildren; track c.primary.id) {
+                <div class="child">
+                  <div class="child-drop" aria-hidden="true"></div>
+                  <app-tree-node [node]="c" [familyName]="familyName"></app-tree-node>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</div>

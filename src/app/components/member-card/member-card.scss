@@ -1,0 +1,271 @@
+:host {
+  display: inline-block;
+  /* Position must be non-static so :host's z-index applies — without this
+     the tooltip can never rise above sibling tree-nodes. */
+  position: relative;
+}
+
+/* Lift this whole card above sibling cards while it is being inspected,
+   so the tooltip is never overdrawn by a neighbouring hub. */
+:host:has(.member:hover),
+:host:has(.member:focus-within) {
+  z-index: 100;
+}
+
+/* ─── Member circle (was previously inside tree-node.scss) ─── */
+.member {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.circle {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 4px solid var(--male);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  flex-shrink: 0;
+  cursor: help;
+
+  .female & { border-color: var(--female); }
+
+  .member:hover & {
+    transform: scale(1.04);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+.circle-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.circle-icon {
+  width: 56px;
+  height: 56px;
+  color: var(--male);
+
+  .female & { color: var(--female); }
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 110px;
+  text-align: center;
+}
+
+.status-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+  display: inline-block;
+
+  &.alive    { background: var(--status-alive); }
+  &.pending  { background: var(--status-pending); }
+  &.deceased { background: var(--status-deceased); }
+}
+
+/* The status dot on the avatar circle is absolutely positioned. */
+.circle .status-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+.name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.15;
+  word-break: break-word;
+}
+
+.role {
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+.year {
+  font-size: 10px;
+  font-family: 'Roboto Mono', monospace;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* ─── Hover tooltip ─── */
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  width: 280px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  padding: 16px;
+  z-index: 50;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Little arrow pointing down at the avatar. */
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 7px solid transparent;
+  border-top-color: var(--surface);
+  filter: drop-shadow(0 1px 0 var(--border));
+}
+
+.member:hover .tooltip,
+.member:focus-within .tooltip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  transition-delay: 0s;
+}
+
+.tt-head {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.tt-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--border);
+  background: var(--canvas-bg);
+
+  &--icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 28px;
+      height: 28px;
+      color: var(--male);
+    }
+
+    &.female svg { color: var(--female); }
+    &.male { border-color: var(--male-soft); }
+    &.female { border-color: var(--female-soft); }
+  }
+}
+
+.tt-titles { flex: 1; min-width: 0; }
+
+.tt-name {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.tt-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tt-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+
+  &--gender {
+    background: var(--male-soft);
+    color: var(--male);
+    &.female { background: var(--female-soft); color: var(--female); }
+  }
+
+  &--status {
+    background: var(--canvas-bg);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border: none;
+    }
+  }
+}
+
+.tt-list {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tt-row {
+  display: flex;
+  gap: 8px;
+
+  dt, dd { margin: 0; }
+
+  dt {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    min-width: 96px;
+  }
+
+  dd {
+    color: var(--text-primary);
+    font-weight: 500;
+    word-break: break-word;
+  }
+}
+
+.tt-desc {
+  margin: 12px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}

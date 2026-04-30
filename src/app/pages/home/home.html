@@ -1,0 +1,41 @@
+<section class="hero">
+  <div class="settings-corner">
+    <app-settings-panel></app-settings-panel>
+  </div>
+
+  <div class="card">
+    <div class="crest" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2 1 7l11 5 11-5-11-5zM1 12l11 5 11-5M1 17l11 5 11-5"/>
+      </svg>
+    </div>
+    <h1>{{ i18n.t('home.title') }}</h1>
+    <p class="subtitle">{{ i18n.t('home.subtitle') }}</p>
+
+    <form class="search" (ngSubmit)="submit()">
+      <label class="visually-hidden" for="familyName">{{ i18n.t('settings.language') }}</label>
+      <input
+        id="familyName"
+        type="text"
+        autocomplete="off"
+        spellcheck="false"
+        [placeholder]="i18n.t('home.placeholder')"
+        [ngModel]="familyName()"
+        (ngModelChange)="familyName.set($event); error.set(null)"
+        name="familyName"
+      />
+      <button type="submit" class="btn-primary">
+        {{ i18n.t('home.submit') }}
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M9 6l6 6-6 6"/>
+        </svg>
+      </button>
+    </form>
+
+    @if (error()) {
+      <div class="error">{{ error() }}</div>
+    }
+
+    <div class="hint">{{ i18n.t('home.hint') }} <code>/familiya</code></div>
+  </div>
+</section>

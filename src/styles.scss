@@ -1,0 +1,112 @@
+/* ─── Design tokens ─────────────────────────────────────────────
+   Two themes are defined: light (default) on :root and dark when
+   <html data-theme="dark"> is set. The ThemeService toggles the
+   attribute; an inline script in index.html applies the saved
+   preference before the app boots so there is no flash. */
+
+:root,
+:root[data-theme="light"] {
+  /* Surfaces */
+  --canvas-bg: #f5f7fb;
+  --surface: #ffffff;
+  --hub-bg: rgba(255, 255, 255, 0.85);
+  --hub-border: #cbd5e1;
+
+  /* Brand & accents */
+  --brand: #4f46e5;
+  --brand-strong: #4338ca;
+  --brand-soft: rgba(79, 70, 229, 0.1);
+
+  /* Text */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+
+  /* Genders */
+  --male: #3b82f6;
+  --male-soft: rgba(59, 130, 246, 0.25);
+  --female: #ec4899;
+  --female-soft: rgba(236, 72, 153, 0.25);
+
+  /* Status */
+  --status-alive: #10b981;
+  --status-pending: #f59e0b;
+  --status-deceased: #94a3b8;
+
+  /* Tree connectors */
+  --tree-line: #94a3b8;
+
+  /* Misc */
+  --danger: #dc2626;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+}
+
+:root[data-theme="dark"] {
+  --canvas-bg: #0b1220;
+  --surface: #131b2c;
+  --hub-bg: rgba(19, 27, 44, 0.85);
+  --hub-border: #334155;
+
+  --brand: #818cf8;
+  --brand-strong: #a5b4fc;
+  --brand-soft: rgba(129, 140, 248, 0.18);
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  --border: #1f2a44;
+
+  --male: #60a5fa;
+  --male-soft: rgba(96, 165, 250, 0.28);
+  --female: #f472b6;
+  --female-soft: rgba(244, 114, 182, 0.28);
+
+  --status-alive: #34d399;
+  --status-pending: #fbbf24;
+  --status-deceased: #64748b;
+
+  --tree-line: #475569;
+
+  --danger: #f87171;
+
+  /* In dark mode shadows need to be deeper to read against the surface. */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+
+/* ─── Reset / base ─── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--canvas-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* Smooth out theme transitions. */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body { overflow-x: hidden; }
+
+a { color: var(--brand); }
+button { font-family: inherit; }
+
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 6px;
+}

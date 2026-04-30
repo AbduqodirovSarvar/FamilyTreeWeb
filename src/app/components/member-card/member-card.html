@@ -1,0 +1,93 @@
+<div class="member"
+     [class.male]="member.gender === Gender.MALE"
+     [class.female]="member.gender === Gender.FEMALE">
+  <div class="circle" [class.has-image]="!!avatarUrl()">
+    <span class="status-dot" [class]="statusClass()"></span>
+    @if (avatarUrl(); as src) {
+      <img [src]="src" alt="" class="circle-img">
+    } @else {
+      <svg class="circle-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.3 0-9.8 1.6-9.8 4.9v2.5h19.6v-2.5c0-3.3-6.5-4.9-9.8-4.9z"/>
+      </svg>
+    }
+  </div>
+  <div class="meta">
+    <div class="name">{{ shortName() }}</div>
+    <div class="role">{{ relation }}</div>
+    <div class="year">{{ birthYear() }}</div>
+  </div>
+
+  <!-- Hover tooltip — shows the full member dossier. -->
+  <div class="tooltip" role="tooltip">
+    <header class="tt-head">
+      @if (avatarUrl(); as src) {
+        <img [src]="src" alt="" class="tt-avatar">
+      } @else {
+        <div class="tt-avatar tt-avatar--icon"
+             [class.male]="member.gender === Gender.MALE"
+             [class.female]="member.gender === Gender.FEMALE">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.3 0-9.8 1.6-9.8 4.9v2.5h19.6v-2.5c0-3.3-6.5-4.9-9.8-4.9z"/>
+          </svg>
+        </div>
+      }
+      <div class="tt-titles">
+        <h3 class="tt-name">{{ fullName() }}</h3>
+        <div class="tt-tags">
+          <span class="tt-tag tt-tag--gender"
+                [class.male]="member.gender === Gender.MALE"
+                [class.female]="member.gender === Gender.FEMALE">
+            {{ genderLabel() }}
+          </span>
+          <span class="tt-tag tt-tag--status" [class]="'status-' + statusClass()">
+            <span class="status-dot" [class]="statusClass()"></span>
+            {{ statusLabel() }}
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <dl class="tt-list">
+      @if (birthDateLong()) {
+        <div class="tt-row">
+          <dt>{{ i18n.t('member.birthDay') }}</dt>
+          <dd>{{ birthDateLong() }}</dd>
+        </div>
+      }
+      @if (deathDateLong(); as d) {
+        <div class="tt-row">
+          <dt>{{ i18n.t('member.deathDay') }}</dt>
+          <dd>{{ d }}</dd>
+        </div>
+      }
+      @if (age() !== null) {
+        <div class="tt-row">
+          <dt>{{ member.deathDay ? i18n.t('member.lifespan') : i18n.t('member.age') }}</dt>
+          <dd>{{ age() }}</dd>
+        </div>
+      }
+      @if (member.fatherName) {
+        <div class="tt-row">
+          <dt>{{ i18n.t('member.father') }}</dt>
+          <dd>{{ member.fatherName }}</dd>
+        </div>
+      }
+      @if (member.motherName) {
+        <div class="tt-row">
+          <dt>{{ i18n.t('member.mother') }}</dt>
+          <dd>{{ member.motherName }}</dd>
+        </div>
+      }
+      @if (member.spouseName) {
+        <div class="tt-row">
+          <dt>{{ i18n.t('member.spouse') }}</dt>
+          <dd>{{ member.spouseName }}</dd>
+        </div>
+      }
+    </dl>
+
+    @if (member.description) {
+      <p class="tt-desc">{{ member.description }}</p>
+    }
+  </div>
+</div>

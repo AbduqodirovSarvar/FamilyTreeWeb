@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sulola daraxti</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Roboto+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <script>
+    // Apply persisted/system theme before Angular hydrates, otherwise the
+    // page paints in light mode for one frame before the ThemeService
+    // effect runs and switches it. Mirrors the logic in ThemeService.
+    (function () {
+      try {
+        var stored = localStorage.getItem('ft.theme');
+        var mode = (stored === 'light' || stored === 'dark' || stored === 'system') ? stored : 'system';
+        var resolved = mode;
+        if (mode === 'system') {
+          resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = resolved;
+      } catch (_) { /* private mode etc. — leave default light */ }
+    })();
+  </script>
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>

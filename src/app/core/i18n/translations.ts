@@ -1,0 +1,178 @@
+export type Lang = 'uz' | 'ru' | 'en';
+
+export const LANG_OPTIONS: { code: Lang; label: string }[] = [
+  { code: 'uz', label: "O'zbekcha" },
+  { code: 'ru', label: 'Русский' },
+  { code: 'en', label: 'English' }
+];
+
+/**
+ * Translation dictionary. Keys are dotted paths grouped by feature.
+ * `{{name}}` placeholders are replaced by I18nService.t(key, params).
+ */
+export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
+  uz: {
+    'home.title': 'Sulola daraxti',
+    'home.subtitle': "Familiya nomini kiriting va shu oilaning daraxtini ko'ring.",
+    'home.placeholder': 'masalan: Karimov',
+    'home.submit': "Ko'rish",
+    'home.errorRequired': 'Familiya nomini kiriting',
+    'home.hint': "Yoki to'g'ridan-to'g'ri URL'ga kiriting:",
+
+    'notFound.title': 'Sahifa topilmadi',
+    'notFound.familyMissing': '"{{name}}" nomli oila bazada mavjud emas.',
+    'notFound.generic': "Siz qidirgan sahifa mavjud emas yoki o'chirilgan.",
+    'notFound.back': 'Boshiga qaytish',
+
+    'tree.brand': 'Sulola',
+    'tree.members': "{{count}} a'zo",
+    'tree.zoomIn': 'Yaqinlashtirish (+)',
+    'tree.zoomOut': 'Uzoqlashtirish (-)',
+    'tree.zoomReset': 'Asl holatga qaytarish (0)',
+    'tree.zoomInLabel': 'Yaqinlashtirish',
+    'tree.zoomOutLabel': 'Uzoqlashtirish',
+    'tree.zoomToolbar': 'Masshtab',
+    'tree.loading': 'Yuklanmoqda…',
+    'tree.errorLoad': "Daraxtni yuklab bo'lmadi",
+    'tree.emptyTitle': "A'zolar topilmadi",
+    'tree.emptySubtitle': "Bu oilada hali ro'yxatga olingan a'zolar yo'q.",
+
+    'node.head': 'Bosh ota-bobo',
+    'node.son': "O'g'il",
+    'node.daughter': 'Qiz',
+    'node.spouse': "Turmush o'rtog'i",
+    'node.spouseN': "Turmush o'rtog'i ({{n}})",
+    'node.commonChildren': 'UMUMIY FARZANDLAR',
+    'node.familyChildren': '{{tag}} FARZANDLARI',
+    'node.children': 'FARZANDLAR',
+
+    'member.male': 'Erkak',
+    'member.female': 'Ayol',
+    'member.alive': 'Tirik',
+    'member.deceased': 'Vafot etgan',
+    'member.partial': "Ma'lumot to'liq emas",
+    'member.birthDay': "Tug'ilgan kuni",
+    'member.deathDay': 'Vafot kuni',
+    'member.age': 'Yoshi',
+    'member.lifespan': 'Yashagan yillari',
+    'member.father': 'Otasi',
+    'member.mother': 'Onasi',
+    'member.spouse': "Turmush o'rtog'i",
+
+    'settings.theme': 'Tema',
+    'settings.themeLight': "Yorug'",
+    'settings.themeDark': "Qorong'i",
+    'settings.themeSystem': 'Tizim',
+    'settings.language': 'Til'
+  },
+
+  ru: {
+    'home.title': 'Семейное древо',
+    'home.subtitle': 'Введите фамилию, чтобы увидеть семейное древо.',
+    'home.placeholder': 'например: Каримов',
+    'home.submit': 'Показать',
+    'home.errorRequired': 'Введите фамилию',
+    'home.hint': 'Или перейдите по прямой ссылке:',
+
+    'notFound.title': 'Страница не найдена',
+    'notFound.familyMissing': 'Семья «{{name}}» отсутствует в базе.',
+    'notFound.generic': 'Запрашиваемая страница не существует или была удалена.',
+    'notFound.back': 'Вернуться на главную',
+
+    'tree.brand': 'Семья',
+    'tree.members': '{{count}} чел.',
+    'tree.zoomIn': 'Приблизить (+)',
+    'tree.zoomOut': 'Отдалить (-)',
+    'tree.zoomReset': 'Сбросить (0)',
+    'tree.zoomInLabel': 'Приблизить',
+    'tree.zoomOutLabel': 'Отдалить',
+    'tree.zoomToolbar': 'Масштаб',
+    'tree.loading': 'Загрузка…',
+    'tree.errorLoad': 'Не удалось загрузить дерево',
+    'tree.emptyTitle': 'Участники не найдены',
+    'tree.emptySubtitle': 'В этой семье пока нет добавленных участников.',
+
+    'node.head': 'Глава рода',
+    'node.son': 'Сын',
+    'node.daughter': 'Дочь',
+    'node.spouse': 'Супруг(а)',
+    'node.spouseN': 'Супруг(а) ({{n}})',
+    'node.commonChildren': 'ОБЩИЕ ДЕТИ',
+    'node.familyChildren': 'ДЕТИ {{tag}}',
+    'node.children': 'ДЕТИ',
+
+    'member.male': 'Мужчина',
+    'member.female': 'Женщина',
+    'member.alive': 'Жив(а)',
+    'member.deceased': 'Скончался(ась)',
+    'member.partial': 'Данные неполные',
+    'member.birthDay': 'Дата рождения',
+    'member.deathDay': 'Дата смерти',
+    'member.age': 'Возраст',
+    'member.lifespan': 'Прожил(а) лет',
+    'member.father': 'Отец',
+    'member.mother': 'Мать',
+    'member.spouse': 'Супруг(а)',
+
+    'settings.theme': 'Тема',
+    'settings.themeLight': 'Светлая',
+    'settings.themeDark': 'Тёмная',
+    'settings.themeSystem': 'Системная',
+    'settings.language': 'Язык'
+  },
+
+  en: {
+    'home.title': 'Family Tree',
+    'home.subtitle': 'Enter a surname to view that family.',
+    'home.placeholder': 'e.g. Karimov',
+    'home.submit': 'View',
+    'home.errorRequired': 'Enter a surname',
+    'home.hint': 'Or jump straight to a URL:',
+
+    'notFound.title': 'Page not found',
+    'notFound.familyMissing': 'No family named "{{name}}" exists in the database.',
+    'notFound.generic': "The page you are looking for doesn't exist or was removed.",
+    'notFound.back': 'Back to home',
+
+    'tree.brand': 'Family',
+    'tree.members': '{{count}} members',
+    'tree.zoomIn': 'Zoom in (+)',
+    'tree.zoomOut': 'Zoom out (-)',
+    'tree.zoomReset': 'Reset (0)',
+    'tree.zoomInLabel': 'Zoom in',
+    'tree.zoomOutLabel': 'Zoom out',
+    'tree.zoomToolbar': 'Zoom',
+    'tree.loading': 'Loading…',
+    'tree.errorLoad': 'Failed to load tree',
+    'tree.emptyTitle': 'No members found',
+    'tree.emptySubtitle': 'This family has no recorded members yet.',
+
+    'node.head': 'Family head',
+    'node.son': 'Son',
+    'node.daughter': 'Daughter',
+    'node.spouse': 'Spouse',
+    'node.spouseN': 'Spouse ({{n}})',
+    'node.commonChildren': 'COMMON CHILDREN',
+    'node.familyChildren': '{{tag}} CHILDREN',
+    'node.children': 'CHILDREN',
+
+    'member.male': 'Male',
+    'member.female': 'Female',
+    'member.alive': 'Alive',
+    'member.deceased': 'Deceased',
+    'member.partial': 'Incomplete data',
+    'member.birthDay': 'Birth date',
+    'member.deathDay': 'Death date',
+    'member.age': 'Age',
+    'member.lifespan': 'Years lived',
+    'member.father': 'Father',
+    'member.mother': 'Mother',
+    'member.spouse': 'Spouse',
+
+    'settings.theme': 'Theme',
+    'settings.themeLight': 'Light',
+    'settings.themeDark': 'Dark',
+    'settings.themeSystem': 'System',
+    'settings.language': 'Language'
+  }
+};

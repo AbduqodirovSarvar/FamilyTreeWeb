@@ -1,0 +1,14 @@
+services:
+  ui:
+    image: ${DOCKER_USERNAME:-yourusername}/family-tree-ui:${IMAGE_TAG:-v1.0.0}
+    pull_policy: always
+    container_name: family-tree-ui
+    restart: unless-stopped
+    ports:
+      - "${UI_PORT:-4401}:80"
+    networks:
+      - family-tree-ui-net
+
+networks:
+  family-tree-ui-net:
+    driver: bridge

@@ -44,6 +44,7 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'node.spouseN': "Turmush o'rtog'i ({{n}})",
     'node.commonChildren': 'UMUMIY FARZANDLAR',
     'node.familyChildren': '{{tag}} FARZANDLARI',
+    'node.coupleChildren': '{{primary}} VA {{spouse}} FARZANDLARI',
     'node.children': 'FARZANDLAR',
 
     'member.male': 'Erkak',
@@ -99,6 +100,7 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'node.spouseN': 'Супруг(а) ({{n}})',
     'node.commonChildren': 'ОБЩИЕ ДЕТИ',
     'node.familyChildren': 'ДЕТИ {{tag}}',
+    'node.coupleChildren': 'ДЕТИ {{primary}} И {{spouse}}',
     'node.children': 'ДЕТИ',
 
     'member.male': 'Мужчина',
@@ -154,6 +156,7 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'node.spouseN': 'Spouse ({{n}})',
     'node.commonChildren': 'COMMON CHILDREN',
     'node.familyChildren': '{{tag}} CHILDREN',
+    'node.coupleChildren': '{{primary}} AND {{spouse}} CHILDREN',
     'node.children': 'CHILDREN',
 
     'member.male': 'Male',

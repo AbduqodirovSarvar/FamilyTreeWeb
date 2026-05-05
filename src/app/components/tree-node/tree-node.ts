@@ -58,13 +58,36 @@ export class TreeNodeComponent {
       : this.i18n.t('node.spouseN', { n: index + 1 });
   }
 
+  /**
+   * Children-block badge — shows BOTH parents' full names so users can read
+   * who the kids belong to without hovering. Falls back to a single name (or
+   * the family surname) when one side has only partial data — keeps the
+   * label useful even on incomplete records.
+   * Format: "Sarvar Abduqodirov VA Gulnora Xolmurodova FARZANDLARI"
+   */
   spouseGroupLabel(group: SpouseGroup): string {
-    const last = (group.spouse.lastName ?? '').trim();
-    const first = (group.spouse.firstName ?? '').trim();
-    const tag = (last || first || this.familyName || '').toUpperCase();
+    const node = this._node();
+    const primary = node ? this.fullName(node.primary) : '';
+    const spouse = this.fullName(group.spouse);
+
+    if (primary && spouse) {
+      return this.i18n.t('node.coupleChildren', {
+        primary: primary.toUpperCase(),
+        spouse: spouse.toUpperCase()
+      });
+    }
+    const tag = (spouse || primary || this.familyName || '').toUpperCase();
     return tag
       ? this.i18n.t('node.familyChildren', { tag })
       : this.i18n.t('node.children');
+  }
+
+  /** "First Last" with graceful fallback when parts are missing. */
+  private fullName(m: { firstName?: string | null; lastName?: string | null }): string {
+    return [m.firstName, m.lastName]
+      .map(s => (s ?? '').trim())
+      .filter(s => s.length > 0)
+      .join(' ');
   }
 
   commonChildrenLabel(): string {

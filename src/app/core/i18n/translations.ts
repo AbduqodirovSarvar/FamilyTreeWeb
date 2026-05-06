@@ -18,6 +18,8 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'home.submit': "Ko'rish",
     'home.errorRequired': 'Familiya nomini kiriting',
     'home.hint': "Yoki to'g'ridan-to'g'ri URL'ga kiriting:",
+    'home.cta.text': "Siz ham o'z shajara daraxtingizni yarating",
+    'home.cta.action': "Ro'yxatdan o'tish",
 
     'notFound.title': 'Sahifa topilmadi',
     'notFound.familyMissing': '"{{name}}" nomli oila bazada mavjud emas.',
@@ -74,6 +76,8 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'home.submit': 'Показать',
     'home.errorRequired': 'Введите фамилию',
     'home.hint': 'Или перейдите по прямой ссылке:',
+    'home.cta.text': 'Создайте своё семейное древо',
+    'home.cta.action': 'Зарегистрироваться',
 
     'notFound.title': 'Страница не найдена',
     'notFound.familyMissing': 'Семья «{{name}}» отсутствует в базе.',
@@ -130,6 +134,8 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'home.submit': 'View',
     'home.errorRequired': 'Enter a surname',
     'home.hint': 'Or jump straight to a URL:',
+    'home.cta.text': 'Build your own family tree',
+    'home.cta.action': 'Sign up',
 
     'notFound.title': 'Page not found',
     'notFound.familyMissing': 'No family named "{{name}}" exists in the database.',

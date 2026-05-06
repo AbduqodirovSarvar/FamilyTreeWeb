@@ -2,8 +2,10 @@
   position: relative;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 20px;
   padding: 24px;
   background:
     radial-gradient(ellipse at top, var(--brand-soft), transparent 60%),
@@ -152,4 +154,68 @@ input {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* "Build your own tree" CTA — sits below the main card so it doesn't
+   compete with the search action. Subtle styling: pill-shaped, semi-
+   transparent surface, only the link itself uses the brand color. */
+.cta {
+  width: 100%;
+  max-width: 540px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
+}
+
+.cta-text {
+  color: var(--text-secondary);
+  font-size: 14px;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--brand);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  transition: background 0.15s, color 0.15s, transform 0.05s;
+
+  svg {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  &:hover {
+    background: var(--brand);
+    color: #fff;
+  }
+  &:active { transform: translateY(1px); }
+}
+
+@media (max-width: 480px) {
+  .cta {
+    border-radius: 16px;
+    flex-direction: column;
+    text-align: center;
+  }
+  .cta-text { flex: 0 0 auto; }
 }

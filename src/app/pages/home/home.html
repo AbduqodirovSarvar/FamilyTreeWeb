@@ -38,4 +38,19 @@
 
     <div class="hint">{{ i18n.t('home.hint') }} <code>/familiya</code></div>
   </div>
+
+  @if (adminUrl) {
+    <div class="cta">
+      <span class="cta-text">{{ i18n.t('home.cta.text') }}</span>
+      <a [href]="adminUrl"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="cta-link">
+        {{ i18n.t('home.cta.action') }}
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 6l6 6-6 6"/>
+        </svg>
+      </a>
+    </div>
+  }
 </section>

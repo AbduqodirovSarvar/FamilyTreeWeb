@@ -59,10 +59,13 @@ export class FamilyTreePage implements OnInit {
 
   readonly zoomPercent: Signal<number> = computed(() => Math.round(this.zoom() * 100));
 
-  // Pan state — only mutated during an active drag.
+  // Active pointers — keyed by pointerId so each touch is tracked
+  // independently. One = pan, two = pinch zoom.
+  private readonly activePointers = new Map<number, { x: number; y: number }>();
   private dragging = false;
   private lastX = 0;
   private lastY = 0;
+  private lastPinchDistance = 0;
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -112,59 +115,114 @@ export class FamilyTreePage implements OnInit {
   }
 
   /**
-   * Zoom toward the cursor — multiply the new/old scale ratio onto the offset
-   * from the viewport's centre so the point under the cursor stays put.
+   * Zoom around an arbitrary viewport point so the world point under it
+   * stays put — same trick used by every map app. (cx, cy) are in
+   * viewport-centre coordinates.
    */
-  onWheel(event: WheelEvent): void {
-    if (!event.ctrlKey && !event.metaKey && !event.shiftKey && Math.abs(event.deltaY) < 4) {
-      // Let trackpad pinch through; ignore tiny scroll noise.
-    }
-    event.preventDefault();
-
-    const viewport = this.viewportRef?.nativeElement;
-    if (!viewport) return;
-
+  private zoomAt(cx: number, cy: number, newZoom: number): void {
     const oldZoom = this.zoom();
-    const direction = event.deltaY > 0 ? -1 : 1;
-    const newZoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, oldZoom + direction * ZOOM_STEP));
-    if (newZoom === oldZoom) return;
-
-    const rect = viewport.getBoundingClientRect();
-    const cx = event.clientX - rect.left - rect.width / 2;
-    const cy = event.clientY - rect.top - rect.height / 2;
-    const ratio = newZoom / oldZoom;
-
+    const clamped = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, newZoom));
+    if (clamped === oldZoom) return;
+    const ratio = clamped / oldZoom;
     this.panX.update(p => cx - (cx - p) * ratio);
     this.panY.update(p => cy - (cy - p) * ratio);
-    this.zoom.set(newZoom);
+    this.zoom.set(clamped);
   }
 
-  // ─── Pan (drag) ────────────────────────────────────────────────
+  /** Convert client-space coordinates into viewport-centre coordinates. */
+  private toViewportCoords(clientX: number, clientY: number): { x: number; y: number } | null {
+    const viewport = this.viewportRef?.nativeElement;
+    if (!viewport) return null;
+    const rect = viewport.getBoundingClientRect();
+    return { x: clientX - rect.left - rect.width / 2, y: clientY - rect.top - rect.height / 2 };
+  }
+
+  /** Wheel — zoom toward the cursor. */
+  onWheel(event: WheelEvent): void {
+    event.preventDefault();
+    const point = this.toViewportCoords(event.clientX, event.clientY);
+    if (!point) return;
+    const direction = event.deltaY > 0 ? -1 : 1;
+    this.zoomAt(point.x, point.y, this.zoom() + direction * ZOOM_STEP);
+  }
+
+  // ─── Pointer events (mouse + touch + pen, unified) ─────────────
   onPointerDown(event: PointerEvent): void {
-    // Only left-button or touch — never start a pan from a node click.
-    if (event.button !== 0 && event.pointerType === 'mouse') return;
-    this.dragging = true;
-    this.lastX = event.clientX;
-    this.lastY = event.clientY;
+    // Ignore non-primary mouse buttons; touches always come through.
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    this.activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
     (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+
+    if (this.activePointers.size === 1) {
+      this.dragging = true;
+      this.lastX = event.clientX;
+      this.lastY = event.clientY;
+    } else if (this.activePointers.size === 2) {
+      this.dragging = false;
+      this.lastPinchDistance = this.currentPinchDistance();
+    }
   }
 
   onPointerMove(event: PointerEvent): void {
-    if (!this.dragging) return;
-    const dx = event.clientX - this.lastX;
-    const dy = event.clientY - this.lastY;
-    this.lastX = event.clientX;
-    this.lastY = event.clientY;
-    this.panX.update(p => p + dx);
-    this.panY.update(p => p + dy);
+    if (!this.activePointers.has(event.pointerId)) return;
+    this.activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+    if (this.activePointers.size >= 2) {
+      // Pinch — zoom toward the midpoint of the two touches.
+      const newDistance = this.currentPinchDistance();
+      if (this.lastPinchDistance > 0 && newDistance > 0) {
+        const ratio = newDistance / this.lastPinchDistance;
+        const mid = this.currentPinchMidpoint();
+        if (mid) this.zoomAt(mid.x, mid.y, this.zoom() * ratio);
+      }
+      this.lastPinchDistance = newDistance;
+      return;
+    }
+
+    if (this.dragging) {
+      const dx = event.clientX - this.lastX;
+      const dy = event.clientY - this.lastY;
+      this.lastX = event.clientX;
+      this.lastY = event.clientY;
+      this.panX.update(p => p + dx);
+      this.panY.update(p => p + dy);
+    }
   }
 
   onPointerUp(event: PointerEvent): void {
-    this.dragging = false;
+    if (!this.activePointers.has(event.pointerId)) return;
+    this.activePointers.delete(event.pointerId);
     const target = event.currentTarget as HTMLElement;
     if (target.hasPointerCapture(event.pointerId)) {
       target.releasePointerCapture(event.pointerId);
     }
+
+    if (this.activePointers.size === 0) {
+      this.dragging = false;
+      this.lastPinchDistance = 0;
+    } else if (this.activePointers.size === 1) {
+      // Coming out of a pinch — reseat the drag anchor on the surviving
+      // finger so the world doesn't jump on the next move.
+      const remaining = Array.from(this.activePointers.values())[0];
+      this.lastX = remaining.x;
+      this.lastY = remaining.y;
+      this.lastPinchDistance = 0;
+      this.dragging = true;
+    }
+  }
+
+  private currentPinchDistance(): number {
+    const pts = Array.from(this.activePointers.values());
+    if (pts.length < 2) return 0;
+    const [a, b] = pts;
+    return Math.hypot(b.x - a.x, b.y - a.y);
+  }
+
+  private currentPinchMidpoint(): { x: number; y: number } | null {
+    const pts = Array.from(this.activePointers.values());
+    if (pts.length < 2) return null;
+    const [a, b] = pts;
+    return this.toViewportCoords((a.x + b.x) / 2, (a.y + b.y) / 2);
   }
 
   @HostListener('window:keydown', ['$event'])

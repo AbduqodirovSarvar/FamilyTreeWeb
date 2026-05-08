@@ -37,7 +37,7 @@
         <circle cx="12" cy="12" r="9"/>
         <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
       </svg>
-      <span class="code">{{ i18n.lang().toUpperCase() }}</span>
+      <span class="code">{{ i18n.shortLabel() }}</span>
     </button>
 
     @if (open()) {
@@ -50,7 +50,7 @@
             [attr.aria-checked]="i18n.lang() === l.code"
             [class.active]="i18n.lang() === l.code"
             (click)="pickLang(l.code)">
-            <span class="popover-code">{{ l.code.toUpperCase() }}</span>
+            <span class="popover-code">{{ i18n.shortLabel(l.code) }}</span>
             <span>{{ l.label }}</span>
             @if (i18n.lang() === l.code) {
               <svg viewBox="0 0 24 24" class="check" aria-hidden="true">

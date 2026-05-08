@@ -1,7 +1,8 @@
-export type Lang = 'uz' | 'ru' | 'en';
+export type Lang = 'uz' | 'uz-cyrl' | 'ru' | 'en';
 
 export const LANG_OPTIONS: { code: Lang; label: string }[] = [
   { code: 'uz', label: "O'zbekcha" },
+  { code: 'uz-cyrl', label: 'Ўзбекча (кирил)' },
   { code: 'ru', label: 'Русский' },
   { code: 'en', label: 'English' }
 ];
@@ -36,8 +37,12 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'tree.zoomToolbar': 'Masshtab',
     'tree.loading': 'Yuklanmoqda…',
     'tree.errorLoad': "Daraxtni yuklab bo'lmadi",
+    'tree.errorPdf': "PDF yaratib bo'lmadi",
     'tree.emptyTitle': "A'zolar topilmadi",
     'tree.emptySubtitle': "Bu oilada hali ro'yxatga olingan a'zolar yo'q.",
+    'tree.downloadPdf': 'PDF yuklab olish',
+    'tree.downloadPdfLabel': 'Daraxtni PDF shaklida yuklab olish',
+    'tree.downloadingPdf': 'PDF tayyorlanmoqda…',
 
     'node.head': 'Bosh ota-bobo',
     'node.son': "O'g'il",
@@ -66,7 +71,73 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'settings.themeLight': "Yorug'",
     'settings.themeDark': "Qorong'i",
     'settings.themeSystem': 'Tizim',
-    'settings.language': 'Til'
+    'settings.language': 'Til',
+
+    'footer.cta': "O'z shajara daraxtingizni yarating"
+  },
+
+  'uz-cyrl': {
+    'home.title': 'Сулола дарахти',
+    'home.subtitle': 'Фамилия номини киритинг ва шу оиланинг дарахтини кўринг.',
+    'home.placeholder': 'масалан: Каримов',
+    'home.submit': 'Кўриш',
+    'home.errorRequired': 'Фамилия номини киритинг',
+    'home.hint': "Ёки тўғридан-тўғри URL'га киритинг:",
+    'home.cta.text': 'Сиз ҳам ўз шажара дарахтингизни яратинг',
+    'home.cta.action': 'Рўйхатдан ўтиш',
+
+    'notFound.title': 'Саҳифа топилмади',
+    'notFound.familyMissing': '"{{name}}" номли оила базада мавжуд эмас.',
+    'notFound.generic': 'Сиз қидирган саҳифа мавжуд эмас ёки ўчирилган.',
+    'notFound.back': 'Бошига қайтиш',
+
+    'tree.brand': 'Сулола',
+    'tree.members': "{{count}} аъзо",
+    'tree.zoomIn': 'Яқинлаштириш (+)',
+    'tree.zoomOut': 'Узоқлаштириш (-)',
+    'tree.zoomReset': 'Асл ҳолатга қайтариш (0)',
+    'tree.zoomInLabel': 'Яқинлаштириш',
+    'tree.zoomOutLabel': 'Узоқлаштириш',
+    'tree.zoomToolbar': 'Масштаб',
+    'tree.loading': 'Юкланмоқда…',
+    'tree.errorLoad': "Дарахтни юклаб бўлмади",
+    'tree.errorPdf': 'PDF яратиб бўлмади',
+    'tree.emptyTitle': 'Аъзолар топилмади',
+    'tree.emptySubtitle': 'Бу оилада ҳали рўйхатга олинган аъзолар йўқ.',
+    'tree.downloadPdf': 'PDF юклаб олиш',
+    'tree.downloadPdfLabel': 'Дарахтни PDF шаклида юклаб олиш',
+    'tree.downloadingPdf': 'PDF тайёрланмоқда…',
+
+    'node.head': 'Бош ота-бобо',
+    'node.son': 'Ўғил',
+    'node.daughter': 'Қиз',
+    'node.spouse': 'Турмуш ўртоғи',
+    'node.spouseN': 'Турмуш ўртоғи ({{n}})',
+    'node.commonChildren': 'УМУМИЙ ФАРЗАНДЛАР',
+    'node.familyChildren': '{{tag}} ФАРЗАНДЛАРИ',
+    'node.coupleChildren': '{{primary}} ВА {{spouse}} ФАРЗАНДЛАРИ',
+    'node.children': 'ФАРЗАНДЛАР',
+
+    'member.male': 'Эркак',
+    'member.female': 'Аёл',
+    'member.alive': 'Тирик',
+    'member.deceased': 'Вафот этган',
+    'member.partial': 'Маълумот тўлиқ эмас',
+    'member.birthDay': 'Туғилган куни',
+    'member.deathDay': 'Вафот куни',
+    'member.age': 'Ёши',
+    'member.lifespan': 'Яшаган йиллари',
+    'member.father': 'Отаси',
+    'member.mother': 'Онаси',
+    'member.spouse': 'Турмуш ўртоғи',
+
+    'settings.theme': 'Мавзу',
+    'settings.themeLight': 'Ёруғ',
+    'settings.themeDark': 'Қоронғи',
+    'settings.themeSystem': 'Тизим',
+    'settings.language': 'Тил',
+
+    'footer.cta': 'Ўз шажара дарахтингизни яратинг'
   },
 
   ru: {
@@ -94,8 +165,12 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'tree.zoomToolbar': 'Масштаб',
     'tree.loading': 'Загрузка…',
     'tree.errorLoad': 'Не удалось загрузить дерево',
+    'tree.errorPdf': 'Не удалось создать PDF',
     'tree.emptyTitle': 'Участники не найдены',
     'tree.emptySubtitle': 'В этой семье пока нет добавленных участников.',
+    'tree.downloadPdf': 'Скачать PDF',
+    'tree.downloadPdfLabel': 'Скачать дерево в формате PDF',
+    'tree.downloadingPdf': 'Подготовка PDF…',
 
     'node.head': 'Глава рода',
     'node.son': 'Сын',
@@ -124,7 +199,9 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'settings.themeLight': 'Светлая',
     'settings.themeDark': 'Тёмная',
     'settings.themeSystem': 'Системная',
-    'settings.language': 'Язык'
+    'settings.language': 'Язык',
+
+    'footer.cta': 'Создайте своё семейное древо'
   },
 
   en: {
@@ -152,8 +229,12 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'tree.zoomToolbar': 'Zoom',
     'tree.loading': 'Loading…',
     'tree.errorLoad': 'Failed to load tree',
+    'tree.errorPdf': 'Failed to generate PDF',
     'tree.emptyTitle': 'No members found',
     'tree.emptySubtitle': 'This family has no recorded members yet.',
+    'tree.downloadPdf': 'Download PDF',
+    'tree.downloadPdfLabel': 'Download family tree as PDF',
+    'tree.downloadingPdf': 'Preparing PDF…',
 
     'node.head': 'Family head',
     'node.son': 'Son',
@@ -182,6 +263,8 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'settings.themeLight': 'Light',
     'settings.themeDark': 'Dark',
     'settings.themeSystem': 'System',
-    'settings.language': 'Language'
+    'settings.language': 'Language',
+
+    'footer.cta': 'Build your own family tree'
   }
 };

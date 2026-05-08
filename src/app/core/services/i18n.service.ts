@@ -3,7 +3,16 @@ import { Injectable, PLATFORM_ID, effect, inject, signal } from '@angular/core';
 import { Lang, TRANSLATIONS } from '../i18n/translations';
 
 const STORAGE_KEY = 'ft.lang';
-const SUPPORTED: Lang[] = ['uz', 'ru', 'en'];
+const SUPPORTED: Lang[] = ['uz', 'uz-cyrl', 'ru', 'en'];
+
+/** Short label shown on the language toggle button. Cyrillic gets a Cyrillic
+ *  abbreviation so users can tell the two Uzbek scripts apart at a glance. */
+const SHORT_LABEL: Record<Lang, string> = {
+  'uz': 'UZ',
+  'uz-cyrl': 'ЎЗ',
+  'ru': 'RU',
+  'en': 'EN'
+};
 
 @Injectable({ providedIn: 'root' })
 export class I18nService {
@@ -24,6 +33,10 @@ export class I18nService {
   setLang(lang: Lang): void {
     if (SUPPORTED.includes(lang)) this.lang.set(lang);
   }
+
+  /** UI-friendly 2-letter label per language. Used by the language toggle
+   *  button, where `lang.toUpperCase()` would render `UZ-CYRL` and overflow. */
+  shortLabel = (lang: Lang = this.lang()): string => SHORT_LABEL[lang] ?? lang.toUpperCase();
 
   /**
    * Look up `key` in the active language. Reading `lang()` here makes any

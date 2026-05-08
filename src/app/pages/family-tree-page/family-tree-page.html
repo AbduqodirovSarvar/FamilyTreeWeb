@@ -1,4 +1,4 @@
-<div class="page">
+<div class="page" [class.exporting]="exportingPdf()">
   <header class="topbar">
     <a class="brand" routerLink="/">
       <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -12,6 +12,23 @@
         <p class="meta">{{ i18n.t('tree.members', { count: totalMembers() }) }}</p>
       }
     </div>
+
+    <button class="pdf-btn"
+            type="button"
+            (click)="downloadPdf()"
+            [disabled]="exportingPdf() || !tree() || loading()"
+            [attr.aria-label]="i18n.t('tree.downloadPdfLabel')"
+            [attr.title]="i18n.t('tree.downloadPdf')">
+      @if (exportingPdf()) {
+        <span class="spinner" aria-hidden="true"></span>
+        <span class="pdf-btn-text">{{ i18n.t('tree.downloadingPdf') }}</span>
+      } @else {
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/>
+        </svg>
+        <span class="pdf-btn-text">{{ i18n.t('tree.downloadPdf') }}</span>
+      }
+    </button>
 
     <div class="zoom-controls" role="toolbar" [attr.aria-label]="i18n.t('tree.zoomToolbar')">
       <button class="z-btn" (click)="zoomOut()"
@@ -53,7 +70,7 @@
     (pointercancel)="onPointerUp($event)"
     [class.dragging]="false"
   >
-    <div class="stage" [style.transform]="transform()">
+    <div class="stage" #stage [style.transform]="transform()">
       @if (!loading() && totalMembers() === 0 && !error()) {
         <div class="empty">
           <svg viewBox="0 0 24 24" class="big-icon" aria-hidden="true">
@@ -85,4 +102,13 @@
       }
     </div>
   </div>
+
+  @if (exportingPdf()) {
+    <div class="export-overlay" role="status" aria-live="polite">
+      <div class="export-overlay-card">
+        <span class="export-spinner" aria-hidden="true"></span>
+        <span class="export-text">{{ i18n.t('tree.downloadingPdf') }}</span>
+      </div>
+    </div>
+  }
 </div>

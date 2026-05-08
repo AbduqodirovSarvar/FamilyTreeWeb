@@ -1,7 +1,9 @@
 .page {
+  position: relative;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  flex: 1;
+  min-height: 0;
   background: var(--canvas-bg);
 }
 
@@ -60,6 +62,48 @@
   }
 }
 
+.pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  background: var(--brand-soft);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  &:hover:not([disabled]) {
+    background: var(--brand);
+    color: #fff;
+  }
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  /* Hide the label on tight headers to keep the toolbar from wrapping. */
+  @media (max-width: 720px) {
+    padding: 0 10px;
+    .pdf-btn-text { display: none; }
+  }
+}
+
 .zoom-controls {
   display: inline-flex;
   align-items: center;
@@ -68,6 +112,70 @@
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 4px;
+}
+
+/* While capturing the PDF, freeze the canvas so html2canvas sees a stable
+   frame: the dot-grid is dropped (it would render as visible noise in the
+   PDF) and any in-flight animations are killed. Toolbar UI stays where it
+   is — the full-page overlay below covers it for the user, and html2canvas
+   only walks `.stage` so the toolbar never lands in the export anyway. */
+.page.exporting {
+  .viewport {
+    background-image: none;
+    cursor: default;
+  }
+
+  .stage,
+  .stage * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Full-page modal-style loader. Covers the whole .page (header included)
+   so users don't see the brief layout shift while the capture runs. The
+   overlay sits OUTSIDE `.stage` and therefore isn't in the PDF. */
+.export-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  /* Catch all pointer events so users can't fiddle with the canvas
+     while the capture is in flight. */
+  cursor: progress;
+}
+
+.export-overlay-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 28px 40px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+}
+
+.export-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.export-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .z-btn,

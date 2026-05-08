@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   computed,
   ElementRef,
@@ -18,6 +19,7 @@ import { finalize } from 'rxjs';
 import { FamilyService } from '../../core/services/family.service';
 import { FamilyTree, TreeNode } from '../../core/models/tree.model';
 import { I18nService } from '../../core/services/i18n.service';
+import { TreePdfService } from '../../core/services/tree-pdf.service';
 import { TreeNodeComponent } from '../../components/tree-node/tree-node';
 import { SettingsPanelComponent } from '../../components/settings-panel/settings-panel';
 
@@ -37,14 +39,22 @@ export class FamilyTreePage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly familyService = inject(FamilyService);
+  private readonly pdfService = inject(TreePdfService);
+  private readonly cdr = inject(ChangeDetectorRef);
   protected readonly i18n = inject(I18nService);
 
   @ViewChild('viewport', { static: false }) viewportRef?: ElementRef<HTMLDivElement>;
+  @ViewChild('stage', { static: false }) stageRef?: ElementRef<HTMLDivElement>;
 
   readonly familyName: WritableSignal<string> = signal('');
   readonly tree: WritableSignal<FamilyTree | null> = signal(null);
   readonly loading: WritableSignal<boolean> = signal(false);
   readonly error: WritableSignal<string | null> = signal(null);
+
+  /** True while a PDF capture is in flight — toolbar binds a spinner to it
+   *  and we apply `.exporting` on the page so transient UI (zoom toolbar,
+   *  settings dropdown) is hidden from the screenshot. */
+  readonly exportingPdf: WritableSignal<boolean> = signal(false);
 
   readonly zoom: WritableSignal<number> = signal(1);
   readonly panX: WritableSignal<number> = signal(0);
@@ -103,6 +113,45 @@ export class FamilyTreePage implements OnInit {
           this.error.set(err?.error?.message ?? err?.message ?? this.i18n.t('tree.errorLoad'));
         }
       });
+  }
+
+  /**
+   * Capture the rendered tree and download it as a PDF. Resets pan/zoom
+   * to identity first so the capture sees the full unscaled stage; the
+   * `.exporting` flag toggles overlay UI off (zoom toolbar / settings) so
+   * the screenshot stays clean. We restore the previous transform after.
+   */
+  async downloadPdf(): Promise<void> {
+    if (this.exportingPdf() || !this.tree()) return;
+    const stage = this.stageRef?.nativeElement;
+    if (!stage) return;
+
+    const prevZoom = this.zoom();
+    const prevPanX = this.panX();
+    const prevPanY = this.panY();
+
+    this.exportingPdf.set(true);
+    this.zoom.set(1);
+    this.panX.set(0);
+    this.panY.set(0);
+
+    // Force a synchronous repaint so html2canvas captures the
+    // identity-transformed stage, not the previous panned/zoomed frame.
+    this.cdr.detectChanges();
+    await new Promise(resolve => requestAnimationFrame(() => resolve(null)));
+
+    try {
+      const t = this.tree();
+      const baseName = t?.name || t?.familyName || this.familyName() || 'shajara';
+      await this.pdfService.exportElementToPdf(stage, baseName);
+    } catch (err) {
+      this.error.set(this.i18n.t('tree.errorPdf'));
+    } finally {
+      this.zoom.set(prevZoom);
+      this.panX.set(prevPanX);
+      this.panY.set(prevPanY);
+      this.exportingPdf.set(false);
+    }
   }
 
   // ─── Zoom controls ─────────────────────────────────────────────

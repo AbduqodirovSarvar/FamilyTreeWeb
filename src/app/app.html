@@ -1,1 +1,12 @@
-<router-outlet />
+<main class="app-main">
+  <router-outlet />
+</main>
+<footer class="app-footer">
+  <span class="copy">© {{ year }} Abduqodirov Sarvarbek</span>
+  @if (adminUrl) {
+    <span class="sep" aria-hidden="true">·</span>
+    <a class="cta" [href]="adminUrl" target="_blank" rel="noopener noreferrer">
+      {{ i18n.t('footer.cta') }}
+    </a>
+  }
+</footer>

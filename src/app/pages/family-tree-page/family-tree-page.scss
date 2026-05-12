@@ -256,9 +256,37 @@
   /* Subtle dotted texture so panning is visually obvious. */
   background-image: radial-gradient(var(--border) 1px, transparent 1px);
   background-size: 24px 24px;
+  /* Disable native scroll/zoom gestures so our pointer logic fully owns
+     touch input on mobile. */
   touch-action: none;
+  /* Text-selection during a pan turns into a "select" gesture that fights
+     the pointer-capture and makes the drag stutter. Disable it. */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 
   &:active { cursor: grabbing; }
+
+  /* While actively panning, beat the cursor across every child and stop
+     any inner element from intercepting the pointer mid-drag. */
+  &.dragging {
+    cursor: grabbing !important;
+
+    .stage,
+    .stage * {
+      cursor: grabbing !important;
+      pointer-events: none !important;
+    }
+  }
+
+  /* Native HTML image-drag steals the pointer mid-pan in some browsers —
+     belt-and-braces alongside the (dragstart) preventDefault. */
+  .stage img {
+    -webkit-user-drag: none;
+    user-drag: none;
+    pointer-events: none;
+  }
 }
 
 /* Flex-centred in the viewport. The component-controlled
@@ -288,10 +316,11 @@
     position: absolute;
     left: 50%;
     bottom: 0;
-    width: 2px;
+    width: 5px;
     height: 24px;
+    border-radius: 5px;
     background: var(--tree-line);
-    transform: translateX(-1px);
+    transform: translateX(-2.5px);
   }
 
   h2 {
@@ -353,9 +382,10 @@
       top: 0;
       left: 80px;
       right: 80px;
-      height: 2px;
+      height: 5px;
+      border-radius: 5px;
       background: var(--tree-line);
-      opacity: 0.4;
+      opacity: 0.5;
     }
 
     .forest-row {
@@ -366,11 +396,12 @@
         position: absolute;
         top: 0;
         left: 50%;
-        width: 2px;
+        width: 5px;
         height: 32px;
+        border-radius: 5px;
         background: var(--tree-line);
-        opacity: 0.5;
-        transform: translateX(-1px);
+        opacity: 0.6;
+        transform: translateX(-2.5px);
       }
     }
   }

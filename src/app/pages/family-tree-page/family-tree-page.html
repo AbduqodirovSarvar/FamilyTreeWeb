@@ -68,7 +68,8 @@
     (pointermove)="onPointerMove($event)"
     (pointerup)="onPointerUp($event)"
     (pointercancel)="onPointerUp($event)"
-    [class.dragging]="false"
+    (dragstart)="onDragStart($event)"
+    [class.dragging]="dragging()"
   >
     <div class="stage" #stage [style.transform]="transform()">
       @if (!loading() && totalMembers() === 0 && !error()) {

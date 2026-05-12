@@ -23,7 +23,7 @@ import { TreePdfService } from '../../core/services/tree-pdf.service';
 import { TreeNodeComponent } from '../../components/tree-node/tree-node';
 import { SettingsPanelComponent } from '../../components/settings-panel/settings-panel';
 
-const ZOOM_MIN = 0.3;
+const ZOOM_MIN = 0.1;
 const ZOOM_MAX = 3;
 const ZOOM_STEP = 0.15;
 
@@ -72,7 +72,7 @@ export class FamilyTreePage implements OnInit {
   // Active pointers — keyed by pointerId so each touch is tracked
   // independently. One = pan, two = pinch zoom.
   private readonly activePointers = new Map<number, { x: number; y: number }>();
-  private dragging = false;
+  readonly dragging: WritableSignal<boolean> = signal(false);
   private lastX = 0;
   private lastY = 0;
   private lastPinchDistance = 0;
@@ -203,13 +203,18 @@ export class FamilyTreePage implements OnInit {
     (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
 
     if (this.activePointers.size === 1) {
-      this.dragging = true;
+      this.dragging.set(true);
       this.lastX = event.clientX;
       this.lastY = event.clientY;
     } else if (this.activePointers.size === 2) {
-      this.dragging = false;
+      this.dragging.set(false);
       this.lastPinchDistance = this.currentPinchDistance();
     }
+  }
+
+  /** Native HTML5 image-drag would steal the pointer mid-pan — kill it. */
+  onDragStart(event: DragEvent): void {
+    event.preventDefault();
   }
 
   onPointerMove(event: PointerEvent): void {
@@ -228,7 +233,7 @@ export class FamilyTreePage implements OnInit {
       return;
     }
 
-    if (this.dragging) {
+    if (this.dragging()) {
       const dx = event.clientX - this.lastX;
       const dy = event.clientY - this.lastY;
       this.lastX = event.clientX;
@@ -247,7 +252,7 @@ export class FamilyTreePage implements OnInit {
     }
 
     if (this.activePointers.size === 0) {
-      this.dragging = false;
+      this.dragging.set(false);
       this.lastPinchDistance = 0;
     } else if (this.activePointers.size === 1) {
       // Coming out of a pinch — reseat the drag anchor on the surviving
@@ -256,7 +261,7 @@ export class FamilyTreePage implements OnInit {
       this.lastX = remaining.x;
       this.lastY = remaining.y;
       this.lastPinchDistance = 0;
-      this.dragging = true;
+      this.dragging.set(true);
     }
   }
 

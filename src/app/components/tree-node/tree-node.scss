@@ -1,4 +1,4 @@
-$line-width: 2px;
+$line-width: 5px;
 
 :host {
   display: inline-block;
@@ -91,9 +91,10 @@ $line-width: 2px;
 .link {
   flex-shrink: 0;
   width: 28px;
-  height: 2px;
+  height: 5px;
+  border-radius: 5px;
   background: linear-gradient(90deg, var(--male-soft), var(--female-soft));
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 /* Member circle, meta, and tooltip live in member-card.scss now. */
@@ -101,13 +102,13 @@ $line-width: 2px;
 /* Diamond connector — sits at the bottom of every hub. */
 .diamond {
   position: absolute;
-  bottom: -8px;
+  bottom: -9px;
   left: 50%;
   transform: translateX(-50%) rotate(45deg);
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   background: var(--tree-line);
-  border: 2px solid var(--surface);
+  border: 3px solid var(--surface);
   z-index: 1;
 }
 

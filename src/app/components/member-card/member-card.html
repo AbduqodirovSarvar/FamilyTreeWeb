@@ -14,7 +14,12 @@
   <div class="meta">
     <div class="name">{{ shortName() }}</div>
     <div class="role">{{ relation }}</div>
-    <div class="year">{{ birthYear() }}</div>
+    @if (lifespan()) {
+      <div class="year">{{ lifespan() }}</div>
+    }
+    @if (member.description) {
+      <div class="description">{{ member.description }}</div>
+    }
   </div>
 
   <!-- Hover tooltip — shows the full member dossier. -->

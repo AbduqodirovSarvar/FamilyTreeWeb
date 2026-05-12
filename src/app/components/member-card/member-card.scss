@@ -112,6 +112,24 @@
   margin-top: 2px;
 }
 
+/* Short description shown under the year on the small card. Truncated to
+   3 lines so a long bio doesn't blow out the card layout — the full text
+   still appears in the hover tooltip. */
+.description {
+  margin-top: 4px;
+  font-size: 10px;
+  line-height: 1.3;
+  color: var(--text-secondary);
+  font-weight: 400;
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
 /* ─── Hover tooltip ─── */
 .tooltip {
   position: absolute;

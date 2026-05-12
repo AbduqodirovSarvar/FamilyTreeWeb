@@ -160,23 +160,37 @@ $line-width: 5px;
 .block-row {
   display: flex;
   align-items: flex-start;
-  gap: 64px;
+  /* Tight base gap — leaf siblings (no descendants) sit close together.
+     Children that DO have descendants opt back into breathing room via
+     the `:has(.children-area)` rule below. */
+  gap: 24px;
   position: relative;
-  padding: 0 24px;
+  padding: 0 12px;
 }
 
 .sibling-bar {
   position: absolute;
   top: 0;
-  left: 96px;
-  right: 96px;
+  /* Pulled inward to align with first / last child centers under the
+     new tighter spacing (≈ half-circle from the row's edge). */
+  left: 60px;
+  right: 60px;
   height: $line-width;
+  border-radius: $line-width;
   background: var(--tree-line);
 }
 
 .child {
   position: relative;
   padding-top: 40px;
+}
+
+/* A child that has its own subtree (any nested .children-area) needs
+   extra horizontal breathing room so the subtree doesn't crash into
+   neighbouring siblings. Leaf siblings stay tight against each other. */
+.child:has(.children-area) {
+  margin-left: 16px;
+  margin-right: 16px;
 }
 
 /* When a descendant member is hovered, lift this whole subtree above

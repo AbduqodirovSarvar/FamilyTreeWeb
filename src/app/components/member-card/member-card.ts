@@ -44,6 +44,23 @@ export class MemberCardComponent {
     return this.year(this.member.birthDay);
   }
 
+  deathYear(): string {
+    return this.year(this.member.deathDay);
+  }
+
+  /**
+   * Compact lifespan string for the small card: "1990–2024" when deceased,
+   * "1990" when alive, "—1995" when only death is known, or empty.
+   */
+  lifespan(): string {
+    const b = this.birthYear();
+    const d = this.deathYear();
+    if (b && d) return `${b}–${d}`;
+    if (b) return b;
+    if (d) return `—${d}`;
+    return '';
+  }
+
   /** "1 Yanvar 2000" — long date for the tooltip. */
   birthDateLong(): string { return this.dateLong(this.member.birthDay); }
   deathDateLong(): string | null {
